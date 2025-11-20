@@ -1,0 +1,100 @@
+% common_techniques/bellman_ford.tex
+
+\subsubsection{Algoritmo de Bellman-Ford (Fuente Única con Pesos Negativos)}
+
+Bellman-Ford encuentra el camino más corto desde un nodo fuente único a todos los demás nodos en un grafo dirigido. Es vital para grafos que contienen \textbf{aristas con pesos negativos}.
+
+\paragraph{Estrategia:}
+El algoritmo relaja (actualiza) repetidamente todas las aristas del grafo $V-1$ veces. Este número de iteraciones garantiza que se encuentre el camino más corto, asumiendo que no hay ciclos negativos.
+Una iteración número $V$ se usa para detectar si existe un \textbf{ciclo de peso negativo}. Si en la iteración $V$ se puede realizar alguna relajación, existe un ciclo negativo alcanzable desde el origen.
+
+\paragraph{Recurrencia (Relajación):}
+Para cada arista $(u, v)$ con peso $w$:
+$$ \text{dist}[v] = \min(\text{dist}[v], \text{dist}[u] + w) $$
+
+\paragraph{Complejidad:}
+* \textbf{Tiempo:} $O(V \cdot E)$, donde $V$ es el número de vértices y $E$ es el número de aristas.
+* \textbf{Espacio:} $O(V)$ para almacenar las distancias.
+
+% --- Código C++ ---
+\subsubsection{Código C++ (Bellman-Ford)}
+\begin{lstlisting}[
+	caption={Implementación de Bellman-Ford con detección de ciclos negativos},
+	extendedchars=true, 
+	literate={ñ}{{\~n}}1 {Ñ}{{\~N}}1 {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+	]
+	#include <bits/stdc++.h>
+	using namespace std;
+	
+	const long long INF = 1e18; // Usar un valor grande para infinito
+	
+	struct Edge {
+		int u, v;
+		long long weight;
+	};
+	
+	// Retorna true si no hay ciclos negativos, false si se detecta uno.
+	bool bellman_ford(int V, const vector<Edge>& edges, int source, vector<long long>& dist) {
+		dist.assign(V + 1, INF);
+		dist[source] = 0;
+		
+		// 1. Relajar todas las aristas V - 1 veces
+		for (int i = 0; i < V - 1; ++i) {
+			bool relaxed = false;
+			for (const auto& edge : edges) {
+				if (dist[edge.u] != INF && dist[edge.u] + edge.weight < dist[edge.v]) {
+					dist[edge.v] = dist[edge.u] + edge.weight;
+					relaxed = true;
+				}
+			}
+			// Optimización: Si no se relajó ninguna arista, ya encontramos los caminos
+			if (!relaxed) break;
+		}
+		
+		// 2. Detectar Ciclos Negativos (V-ésima relajación)
+		for (const auto& edge : edges) {
+			if (dist[edge.u] != INF && dist[edge.u] + edge.weight < dist[edge.v]) {
+				// Ciclo negativo detectado
+				return false; 
+			}
+		}
+		
+		return true;
+	}
+	
+	int main() {
+		ios_base::sync_with_stdio(false);
+		cin.tie(NULL);
+		
+		int V, E; // V = número de vértices, E = número de aristas
+		int source = 1; // Suponiendo el nodo fuente 1
+		
+		// Ejemplo de inicialización (sustituir con cin >> V >> E)
+		V = 5; 
+		E = 8;
+		
+		vector<Edge> edges = {
+			{1, 2, -1}, {1, 3, 4}, 
+			{2, 3, 3}, {2, 4, 2}, 
+			{2, 5, 2}, {4, 3, 5}, 
+			{4, 2, 1}, {5, 4, -3}
+		};
+		
+		vector<long long> dist;
+		
+		if (bellman_ford(V, edges, source, dist)) {
+			cout << "Caminos minimos encontrados desde el nodo " << source << ":" << endl;
+			for (int i = 1; i <= V; ++i) {
+				if (dist[i] == INF) {
+					cout << "Nodo " << i << ": IMPOSIBLE" << endl;
+				} else {
+					cout << "Nodo " << i << ": " << dist[i] << endl;
+				}
+			}
+		} else {
+			cout << "Ciclo de peso negativo detectado. No se pueden garantizar caminos minimos." << endl;
+		}
+		
+		return 0;
+	}
+\end{lstlisting}

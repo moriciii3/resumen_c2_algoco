@@ -1,0 +1,100 @@
+% dp/getline_example.tex
+
+\subsubsection{Manejo de Entrada Mixta (getline y stringstream)}
+
+El problema central es leer datos donde el primer campo (un nombre de ítem) contiene \textbf{espacios en blanco} y es seguido por números en la misma línea, mientras que las líneas anteriores fueron leídas con cin.
+
+\paragraph{Solución Clave:}
+1.  \textbf{Consumir el \textbackslash n:} Se utiliza una primera llamada a \texttt{getline(cin, linea)} después del último cin para consumir el salto de línea pendiente.
+2.  \textbf{Leer la Línea Completa:} Se usa \texttt{getline} para leer toda la línea de entrada, incluyendo el nombre con espacios.
+3.  \textbf{Separar (Parsing):} Se usa \texttt{stringstream} para procesar las partes de la línea. Se lee cada palabra en un vector.
+4.  \textbf{Extraer Números:} Se extraen los números (que deben ser las últimas palabras) del vector usando \texttt{stoi}. El resto del vector es el nombre.
+
+La lógica principal del código resuelve un problema **Knapsack 0/1**, donde los índices calóricos (\texttt{ics}) son los tamaños y los índices de sabrosidad (\texttt{isos}) son los valores, con una capacidad total $C$.
+
+\paragraph{Complejidad:}
+* \textbf{Tiempo:} $O(N \cdot C)$ para el Knapsack (donde $N$ es el número de ítems y $C$ es la capacidad), más $O(N \cdot L)$ para el parsing (donde $L$ es la longitud promedio de la línea).
+* \textbf{Espacio:} $O(N \cdot C)$ para la DP.
+
+% --- Código C++ (Tal cual) ---
+\subsubsection{Código C++ (Knapsack con Parsing de Línea)}
+\begin{lstlisting}[
+	caption={Uso de getline y stringstream para entrada con espacios},
+	extendedchars=true, 
+	literate={ñ}{{\~n}}1 {Ñ}{{\~N}}1 {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+	]
+	#include <bits/stdc++.h>
+	using namespace std;
+	
+	# define ll long long
+	# define ld long double
+	# define endl '\n'
+	
+	int knapsack(vector<int>& sizes, vector<int>& values, int C){
+		int n = sizes.size();
+		vector<vector<int>> A(n+1, vector<int>(C+1,0));
+		
+		for (int i = 1; i <= n; i++){
+			int si = sizes[i-1];
+			int vi = values[i-1];
+			for (int c = 0; c <= C; c++){
+				if (si > c){
+					A[i][c] = A[i-1][c];
+				} else {
+					A[i][c] = max(A[i-1][c], A[i-1][c-si] + vi);
+				}
+			}
+		}
+		
+		return A[n][C];
+	}
+	
+	int main (){
+		ios_base::sync_with_stdio (false);
+		cin.tie(nullptr);
+		
+		int n, C;
+		cin >> n >> C;
+		
+		vector<string> nombres(n);
+		vector<int> ics(n); // Indices caloricos
+		vector<int> isos(n); // Indices de sabrosidad de osos
+		
+		string linea;
+		getline(cin, linea); // leer el salto de línea después de cin >> n >> C
+		
+		for (int i = 0; i < n; i++) {
+			// EJEMPLO DE INPUT: hamburguesa vegana con lechuga 10 3
+			getline(cin, linea);    // leer línea completa
+			stringstream ss(linea);
+			
+			string nombre;
+			int ic, iso;
+			
+			// Leer todas las palabras del nombre menos los números
+			vector<string> partes;
+			string temp;
+			while (ss >> temp) partes.push_back(temp);
+			
+			// Ahora partes = {'hamburguesa', 'vegana', 'con', 'lechuga', '10', '3'}
+			// Los últimos dos son números
+			iso = stoi(partes.back()); partes.pop_back();
+			ic  = stoi(partes.back()); partes.pop_back();
+			
+			// El nombre es todo lo demás unido
+			nombre = partes[0];
+			for (int k = 1; k < partes.size(); k++)
+			nombre += " " + partes[k];
+			
+			nombres[i] = nombre;
+			ics[i] = ic;
+			isos[i] = iso;
+		}
+		
+		int respuesta = knapsack(ics, isos, C);
+		
+		cout << respuesta << endl;
+		
+		return 0;
+	}
+\end{lstlisting}

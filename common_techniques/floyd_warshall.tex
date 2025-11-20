@@ -1,0 +1,99 @@
+% common_techniques/floyd_warshall.tex
+
+\subsubsection{Algoritmo de Floyd-Warshall (Caminos Mínimos - Todos los Pares)}
+
+Floyd-Warshall calcula las distancias más cortas entre \textbf{cada par de nodos} en un grafo ponderado. Es ideal cuando se necesita una matriz completa de distancias.
+
+\paragraph{Estrategia:}
+Utiliza la Programación Dinámica al iterar sobre un nodo intermedio $k$. Se pregunta: ¿es más corto ir del nodo $i$ al nodo $j$ pasando por el nodo intermedio $k$?
+
+\paragraph{Fórmula DP:}
+Sea $D[i][j]$ la distancia más corta de $i$ a $j$.
+$$ D[i][j] = \min(D[i][j], D[i][k] + D[k][j]) $$
+
+La clave es que la iteración sobre el nodo intermedio $k$ debe ser el bucle **más externo**.
+
+\paragraph{Detección de Ciclos Negativos:}
+Si después de que el algoritmo termina, cualquier entrada $D[i][i]$ (distancia de un nodo a sí mismo) es menor que cero, existe un ciclo negativo que involucra al nodo $i$.
+
+\paragraph{Complejidad:}
+* \textbf{Tiempo:} $O(V^3)$, donde $V$ es el número de vértices.
+* \textbf{Espacio:} $O(V^2)$ para la matriz de distancias.
+
+% --- Código C++ ---
+\subsubsection{Código C++ (Floyd-Warshall)}
+\begin{lstlisting}[
+	caption={Implementación de Floyd-Warshall (Todos los pares)},
+	extendedchars=true, 
+	literate={ñ}{{\~n}}1 {Ñ}{{\~N}}1 {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+	]
+	#include <bits/stdc++.h>
+	using namespace std;
+	
+	const int MAXN = 100;
+	const long long INF = 1e18; 
+	
+	long long D[MAXN + 1][MAXN + 1]; // Matriz de distancias
+	
+	void floyd_warshall(int V) {
+		// 1. Inicialización (D[i][j] = peso de arista, D[i][i] = 0)
+		// Esto generalmente se hace al leer la entrada del grafo
+		
+		// 2. Aplicación de la fórmula DP
+		for (int k = 1; k <= V; ++k) { // Vértice intermedio debe ser el bucle externo
+			for (int i = 1; i <= V; ++i) {
+				for (int j = 1; j <= V; ++j) {
+					if (D[i][k] != INF && D[k][j] != INF) {
+						D[i][j] = min(D[i][j], D[i][k] + D[k][j]);
+					}
+				}
+			}
+		}
+		
+		// 3. Detección de Ciclos Negativos
+		/*
+		for (int i = 1; i <= V; ++i) {
+			if (D[i][i] < 0) {
+				// Ciclo negativo detectado
+			}
+		}
+		*/
+	}
+	
+	
+	int main() {
+		ios_base::sync_with_stdio(false);
+		cin.tie(NULL);
+		
+		int V = 4; // Ejemplo: 4 vértices
+		
+		// Inicializar matriz D con pesos de aristas y INF para no-adyacentes
+		for (int i = 1; i <= V; ++i) {
+			for (int j = 1; j <= V; ++j) {
+				if (i == j) D[i][j] = 0;
+				else D[i][j] = INF;
+			}
+		}
+		
+		// Ejemplo de aristas: (u, v, w)
+		D[1][2] = 5;
+		D[1][4] = 10;
+		D[2][3] = 3;
+		D[3][4] = 1;
+		D[4][1] = 7;
+		
+		floyd_warshall(V);
+		
+		// Imprimir resultado
+		cout << "Matriz de distancias minimas:" << endl;
+		for (int i = 1; i <= V; ++i) {
+			for (int j = 1; j <= V; ++j) {
+				if (D[i][j] == INF) cout << "INF\t";
+				else cout << D[i][j] << "\t";
+			}
+			cout << endl;
+		}
+		
+		return 0;
+	}
+\end{lstlisting}
