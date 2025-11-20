@@ -1,0 +1,73 @@
+% backtracking/next_permutation.tex
+
+% --- Resumen del Algoritmo ---
+\subsubsection{Resumen: Búsqueda de la Siguiente Permutación}
+
+El problema requiere encontrar la **permutación más pequeña** (lexicográficamente) que sea estrictamente **mayor** que la secuencia de dígitos dada ($X$).
+
+Este problema se resuelve de manera eficiente en $O(N)$ (una vez ordenado) mediante un algoritmo de búsqueda lexicográfica, que puede considerarse una forma optimizada de búsqueda que evita generar y probar todas las permutaciones, una tarea que sería $O(N!)$.
+
+\paragraph{Justificación Conceptual (Backtracking):}
+Aunque la función \texttt{std::next\_permutation} es determinística y muy eficiente, el concepto general de buscar la siguiente combinación válida y probar una rama del árbol de búsqueda para modificar la secuencia de dígitos se relaciona con el **Backtracking/Búsqueda Sistemática**.
+
+\paragraph{Función \texttt{std::next\_permutation}}
+
+La función \texttt{std::next\_permutation(first, last)} de la STL de C++ reordena los elementos en el rango \texttt{[first, last)} a su **siguiente permutación lexicográfica** (el siguiente arreglo ordenado en un diccionario).
+
+\begin{itemize}
+	\item \textbf{Funcionamiento Clave:} Modifica la secuencia **in situ** (en el lugar).
+	\item \textbf{Valor de Retorno:}
+	\begin{itemize}
+		\item Devuelve \textbf{\texttt{true}} si la siguiente permutación fue encontrada y el arreglo fue modificado.
+		\item Devuelve \textbf{\texttt{false}} si el arreglo ya estaba en su última permutación (ordenado de forma descendente) y lo reordena a la primera (ordenado de forma ascendente).
+	\end{itemize}
+\end{itemize}
+
+\paragraph{Mecanismo Interno (Algoritmo $O(N)$):}
+
+El algoritmo interno para encontrar la siguiente permutación es altamente eficiente, trabajando en tiempo lineal $O(N)$ después de una posible ordenación inicial:
+
+\begin{enumerate}
+	\item \textbf{Buscar el Punto de Quiebre ($k$):} Se recorre el arreglo de derecha a izquierda para encontrar el índice más grande $k$ tal que \texttt{digits[k] < digits[k + 1]}. Este es el punto donde la secuencia deja de estar en orden descendente y es el punto más a la derecha que se puede incrementar. Si no se encuentra $k$ (la secuencia está completamente ordenada descendentemente), la permutación es la última posible, y el algoritmo retorna \texttt{false}.
+	\item \textbf{Buscar el Elemento de Intercambio ($l$):} Se encuentra el índice más grande $l$ tal que \texttt{digits[k] < digits[l]}. Este elemento \texttt{digits[l]} es el más pequeño en la sub-secuencia derecha que es mayor que \texttt{digits[k]}.
+	\item \textbf{Intercambiar:} Se intercambian \texttt{digits[k]} y \texttt{digits[l]}.
+	\item \textbf{Revertir (Ordenar):} Se revierte (invierte) la sub-secuencia después del índice $k$ (\texttt{digits[k + 1]} hasta el final). Este paso garantiza que el resultado sea la \textbf{siguiente} permutación más pequeña.
+\end{enumerate}
+
+\paragraph{Complejidad:}
+* \textbf{Tiempo:} $O(N)$ por cada llamada a \texttt{next\_permutation} (una vez que la secuencia está ordenada).
+* \textbf{Pre-requisito:} Para encontrar la *siguiente* permutación *más pequeña* que la entrada, la secuencia inicial de dígitos de $X$ debe estar \textbf{ordenada ascendentemente} antes de la primera llamada. **Nota:** En el código se asume que $X$ se ingresa y se trabaja sobre la representación inicial, la función por sí misma siempre devuelve la *siguiente* en el orden lexicográfico, que es lo que pide el problema.
+
+% --- Código C++ (Tal cual) ---
+\subsubsection{Código C++ (Usando next\_permutation)}
+\begin{lstlisting}[
+	caption={Uso de next\_permutation para encontrar el siguiente número},
+	extendedchars=true, 
+	literate={ñ}{{\~n}}1 {Ñ}{{\~N}}1 {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+	]
+	#include <bits/stdc++.h>
+	using namespace std;
+	
+	void solve() {
+		string x;
+		cin >> x;
+		
+		vector<char> digits(x.begin(), x.end());
+		
+		if (next_permutation(digits.begin(), digits.end())) {
+			for(int i = 0; i < digits.size(); i++){
+				cout << digits[i];
+			}
+			cout << endl;
+		} else {
+			cout << 0 << endl;
+		}
+	}
+	
+	int main() {
+		ios::sync_with_stdio(false);
+		cin.tie(nullptr);
+		
+		solve();
+	}
+\end{lstlisting}

@@ -1,0 +1,71 @@
+% dp/mwis.tex
+
+% --- Resumen del Algoritmo ---
+\subsubsection{Resumen: Maximum Weight Independent Set (MWIS) en Grafo de Camino}
+
+El problema MWIS en un **grafo de camino** (una secuencia lineal de vértices, como un array) consiste en encontrar un subconjunto de vértices (elementos) tal que **ningún par de vértices en el subconjunto sea adyacente** (es decir, no se seleccionan dos elementos consecutivos del array), y la suma de los pesos (valores) de los vértices seleccionados sea **máxima**.
+
+
+
+\paragraph{Relación de Recurrencia (Programación Dinámica):}
+Sea $DP[i]$ el peso máximo de un conjunto independiente que se puede formar usando los primeros $i$ elementos del array $A$ (índices $0$ a $i-1$).
+
+Para el elemento $i$:
+
+\begin{itemize}
+	\item \textbf{No tomar $A[i]$:} El valor máximo es simplemente el valor máximo hasta el elemento anterior: $DP[i-1]$.
+	\item \textbf{Tomar $A[i]$:} Si tomamos el elemento $i$, no podemos tomar el elemento $i-1$. Por lo tanto, el valor es $A[i]$ más el valor máximo que se podía obtener hasta el elemento $i-2$: $A[i] + DP[i-2]$.
+\end{itemize}
+
+La recurrencia es:
+$$DP[i] = \max( DP[i-1], A[i] + DP[i-2])$$
+
+\paragraph{Casos Base (Implementación):}
+\begin{itemize}
+	\item $DP[0] = A[0]$ (Primer elemento)
+	\item $DP[1] = \max(A[0], A[1])$ (Máximo entre tomar el primero o el segundo)
+\end{itemize}
+
+\paragraph{Complejidad:}
+\begin{itemize}
+	\item \textbf{Tiempo:} $O(N)$, donde $N$ es el número de elementos en el array (ya que solo se realiza un único bucle lineal).
+	\item \textbf{Espacio:} $O(N)$ para el array de DP.
+\end{itemize}
+
+% --- Código C++ (Tal cual) ---
+\subsubsection{Código C++ (MWIS)}
+\begin{lstlisting}[
+	caption={Maximum Weight Independent Set (MWIS) en DP},
+	extendedchars=true, 
+	literate={ñ}{{\~n}}1 {Ñ}{{\~N}}1 {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+	]
+	#include <bits/stdc++.h>
+	using namespace std;
+	
+	
+	int mwis(vector<int>& A){
+		int n = A.size();
+		if (n == 0) return 0;
+		if (n == 1) return A[0];
+		vector<int> dp(n);
+		
+		dp[0] = A[0];
+		dp[1] = max(A[0], A[1]);
+		
+		for (int i = 2; i < n; i++){
+			dp[i] = max(dp[i-1], A[i] + dp[i-2]);
+		}
+		
+		return dp[n-1];
+	}
+	
+	
+	int main(){
+		vector<int> values = {1,2,4,1,7,8,3};
+		cout << mwis(values) << endl;
+	}
+\end{lstlisting}
+
+---
+
+Ya tienes dos ejercicios en la sección de DP. ¿Te ayudo con un ejercicio para la sección **Dividir y Conquistar** o **Backtracking**?

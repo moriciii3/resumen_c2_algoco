@@ -1,0 +1,30 @@
+% base/plantilla.tex
+
+\subsubsection{Plantilla Inicial C++}
+
+Esta plantilla incluye directivas estándar y optimizaciones para la programación competitiva (I/O rápida, alias de tipos), comunes en entornos de prueba.
+
+\paragraph{Complejidad:}
+* \textbf{Tiempo:} $O(1)$ (Inicialización).
+* \textbf{Espacio:} $O(1)$.
+
+% --- Código C++ ---
+\subsubsection{Código C++ Base}
+\begin{lstlisting}[
+	caption={Plantilla C++ Rápida para Entornos de Pruebas},
+	extendedchars=true, 
+	literate={ñ}{{\~n}}1 {Ñ}{{\~N}}1 {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+	]
+	#include <bits/stdc++.h>
+	using namespace std;
+	
+	# define ll long long
+	# define ld long double
+	# define endl '\n'
+	
+	int main() {
+		ios_base::sync_with_stdio(false);
+		cin.tie(nullptr);
+		return 0;
+	}
+\end{lstlisting}

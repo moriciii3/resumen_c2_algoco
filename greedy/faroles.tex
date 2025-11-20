@@ -1,0 +1,39 @@
+% greedy/faroles.tex
+
+\subsubsection{Mínima Distancia para Iluminar (Faroles)}
+
+El problema busca la mínima distancia (radio $d$) para que los faroles, cuyas posiciones están dadas, iluminen completamente una calle de longitud $L$. La solución se basa en encontrar la máxima distancia entre faroles adyacentes y las distancias a los extremos (0 y $L$) después de ordenar las posiciones.
+
+\paragraph{Complejidad:}
+* \textbf{Tiempo:} $O(n \log n)$ (por la ordenación).
+* \textbf{Espacio:} $O(n)$.
+
+% --- Código C++ ---
+\subsubsection{Código C++ (Faroles)}
+\begin{lstlisting}[
+	caption={Mínima distancia requerida para iluminar una calle},
+	extendedchars=true, 
+	literate={ñ}{{\~n}}1 {Ñ}{{\~N}}1 {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+	]
+	#include <bits/stdc++.h>
+	using namespace std;
+	using 11 long long;
+	
+	int main() {
+		11 n, 1;
+		cin >> n >> 1;
+		vector<double> pos(n);
+		for (ll i=0; i < n; i++) {
+			cin >> pos[i];
+		}
+		sort(pos.begin(), pos.end());
+		double d=0;
+		for (11 i=0; i<n - 1; i++) {
+			d=max(d, (pos[i + 1] - pos[i]) / 2);
+		}
+		d=max(d, pos[0]);
+		d=max(d, 1 - pos[n-1]);
+		cout << fixed << setprecision (10) << d << endl;
+		return 0;
+	}
+\end{lstlisting}

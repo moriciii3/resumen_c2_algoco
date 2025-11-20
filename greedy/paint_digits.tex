@@ -1,0 +1,57 @@
+% greedy/paint_digits.tex
+
+\subsubsection{Construir Número Máximo con Presupuesto (Cercas)}
+
+El objetivo es construir el número lexicográficamente más grande posible con el máximo número de dígitos, dado un presupuesto $V$ y un costo $C_d$ por cada dígito. La estrategia es doblemente greedy: 1) maximizar la longitud con el dígito de costo mínimo ($C_{\min}$), y 2) luego, reemplazar los dígitos $D_{\min}$ de izquierda a derecha por los dígitos más grandes posibles (del 9 al 1) que la pintura restante pueda pagar.
+
+\paragraph{Complejidad:}
+* \textbf{Tiempo:} $O(L)$, donde $L$ es la longitud máxima de la cadena.
+* \textbf{Espacio:} $O(L)$.
+
+% --- Código C++ ---
+\subsubsection{Código C++ (Cercas)}
+\begin{lstlisting}[
+	caption={Construir número máximo con presupuesto de pintura},
+	extendedchars=true, 
+	literate={ñ}{{\~n}}1 {Ñ}{{\~N}}1 {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+	]
+	#include <bits/stdc++.h>
+	using namespace std;
+	using 11 long long;
+	
+	int main() {
+		11 v;
+		cin >> v;
+		vector<11> nums (9);
+		for (11 i=0; i < 9; i++) {
+			cin >> nums[i];
+		}
+		11 min_cost = *min_element(nums.begin(), nums.end());
+		11 min_digit = min_element(nums.begin(), nums.end()) - nums.begin() + 1;
+		
+		if (min_cost > v) {
+			cout << -1 << endl;
+			return 0;
+		}
+		
+		11 max_length = v / min_cost;
+		11 remaining_paint = v % min_cost;
+		
+		string result(max_length, '0' + min_digit);
+		
+		for (11 d=9; d >= min_digit; d--) {
+			for (11 i=0; i < max_length; i++) {
+				11 cost_diff = nums[d-1] - min_cost;
+				if (remaining_paint >= cost_diff) {
+					result [i] = '0' + d;
+					remaining_paint -= cost_diff;
+				} else {
+					break;
+				}
+			}
+		}
+		
+		cout << result << endl;
+		return 0;
+	}
+\end{lstlisting}

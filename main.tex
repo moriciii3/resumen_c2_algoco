@@ -1,0 +1,118 @@
+\documentclass[10pt, a4paper]{article} 
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc} % Mejor manejo de fuentes y guiones
+\usepackage[spanish]{babel}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{listings}
+% --- MODIFICACIÓN CLAVE DE HYPERREF ---
+\usepackage[
+colorlinks=true, % Usa color en lugar de cuadros
+linkcolor=blue,  % Color para enlaces internos (índice a secciones)
+urlcolor=blue,   % Color para URLs
+pdfborder={0 0 0} % Esto asegura que no haya borde en el PDF
+]{hyperref} 
+% ---------------------------------------
+\usepackage{xcolor} % <-- CORRECCIÓN: Paquete para definir colores
+\usepackage{tocloft} % Para mejor control del índice (opcional, pero ayuda)
+
+% --- Configuración para Listings (Presentación de Código) ---
+\definecolor{codegray}{rgb}{0.5,0.5,0.5} % <-- CORRECCIÓN: Define colores
+\definecolor{codepurple}{rgb}{0.58,0,0.82} % <-- CORRECCIÓN: Define colores
+\definecolor{backcolour}{rgb}{0.98,0.98,0.98} % <-- CORRECCIÓN: Define colores
+
+\lstdefinestyle{mystyle}{ % <-- CORRECCIÓN: Define estilo
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegray},
+	keywordstyle=\color{blue},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\footnotesize\ttfamily,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=5pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2,
+	language=C++
+}
+\lstset{style=mystyle}
+
+% --- Comando para importar ejercicios ---
+\newcommand{\ejercicio}[2]{
+	\section*{Ejercicio: #1}
+	\addcontentsline{toc}{subsection}{#1} % Añade subsección al índice
+	\input{#2}
+	\vspace{0.5cm} 
+}
+
+\title{\textbf{Resumen de Algoritmos y Complejidad}} % Título sin emoji
+\author{Apuntes para la Prueba}
+\date{\today}
+
+\begin{document}
+	
+	\maketitle
+	\thispagestyle{empty} 
+	
+	% --- Índice ---
+	\newpage
+	\tableofcontents
+	\thispagestyle{empty}
+	\newpage
+	
+	% -------------------------------------------------------------
+	% 1) Plantilla base y funciones comunes
+	% -------------------------------------------------------------
+	\section{Base}
+	\addcontentsline{toc}{section}{Plantilla Base y Funciones Comunes}
+	
+	\ejercicio{Plantilla Base C++ para Competitiva/Pruebas}{base/plantilla}
+	
+	% -------------------------------------------------------------
+	% 2) Algoritmos Greedy
+	% -------------------------------------------------------------
+	\section{Greedy}
+	\addcontentsline{toc}{section}{Algoritmos Greedy}
+	
+	\ejercicio{Algoritmo de Kruskal (MST)}{greedy/kruskal}
+	\ejercicio{Mínima Distancia para Iluminar (Faroles)}{greedy/faroles}
+	\ejercicio{Construir Número Máximo con Presupuesto (Cercas)}{greedy/paint\_digits}
+	
+	% -------------------------------------------------------------
+	% 3) Técnicas y Estructuras Comunes
+	% -------------------------------------------------------------
+	\section{Técnicas}
+	\addcontentsline{toc}{section}{Técnicas y Estructuras Comunes}
+	
+	\ejercicio{Subarreglos con Suma Objetivo (Sliding Window)}{common\_techniques/sliding\_window\_sum}
+	\ejercicio{Construcción de Palíndromos}{common\_techniques/palindrome\_construction}
+	
+	% -------------------------------------------------------------
+	% 4) Backtracking
+	% -------------------------------------------------------------
+	\section{Backtracking}
+	\addcontentsline{toc}{section}{Algoritmos Backtracking}
+	
+	\ejercicio{Siguiente Permutación Lexicográfica (Usando next\_permutation)}{backtracking/next\_permutation}
+	\ejercicio{Generación de Todas las Permutaciones}{backtracking/all\_permutations}
+	
+	% -------------------------------------------------------------
+	% 5) Programación Dinámica (DP)
+	% -------------------------------------------------------------
+	\section{DP}
+	\addcontentsline{toc}{section}{Programación Dinámica (DP)}
+	
+	\ejercicio{Problema de la Mochila (Knapsack 0/1) con Reconstrucción}{dp/knapsack}
+	\ejercicio{Maximum Weight Independent Set (MWIS) en Grafo de Camino}{dp/mwis}
+	\ejercicio{Cantidad Mínima de Monedas (Coin Change Minimum)}{dp/coin\_change\_min}
+	\ejercicio{Combinaciones de Monedas (El Orden Importa)}{dp/coin\_change\_combinations\_order\_matters}
+	\ejercicio{Combinaciones de Monedas (El Orden No Importa)}{dp/coin\_change\_combinations\_order\_doesnt\_matter}
+	\ejercicio{Combinaciones con Reconstrucción Única (Problema del Camarero)}{dp/unique_reconstruction}
+	
+	\end{document}

@@ -1,0 +1,142 @@
+% dp/knapsack.tex
+
+% --- Resumen del Algoritmo ---
+\subsubsection{Resumen: Problema de la Mochila 0/1 (Knapsack)}
+
+El Problema de la Mochila 0/1 (Knapsack 0/1) busca maximizar el valor total de los ítems seleccionados que pueden caber en una mochila con capacidad $C$. Cada ítem $i$ tiene un tamaño $s_i$ y un valor $v_i$, y solo se puede tomar \textbf{una vez} (0 o 1).
+
+\paragraph{Relación de Recurrencia (Programación Dinámica):}
+La tabla $A[i][c]$ almacena el valor máximo que se puede obtener considerando los primeros $i$ ítems con capacidad $c$.
+
+$$
+A[i][c] = \begin{cases} A[i-1][c] & \text{si } s_i > c \text{ (No cabe)} \\ \max( A[i-1][c], A[i-1][c-s_i] + v_i ) & \text{si } s_i \le c \text{ (Máx. entre no tomar o tomar)} \end{cases}
+$$
+
+\paragraph{Complejidad:}
+* \textbf{Tiempo:} $O(N \cdot C)$, donde $N$ es el número de ítems y $C$ es la capacidad de la mochila.
+* \textbf{Espacio:} $O(N \cdot C)$ para la matriz de DP.
+
+\paragraph{Reconstrucción:}
+La solución es reconstruida iterando la tabla $A$ hacia atrás, desde $A[n][C]$. En el estado $A[i][c]$, se elige el elemento $i$ si el valor es el resultado de haberlo incluido (comparando $A[i][c]$ con $A[i-1][c]$).
+
+% --- Código C++ (Tal cual) ---
+\subsubsection{Código C++ (Knapsack 0/1 con Reconstrucción)}
+\begin{lstlisting}[
+	caption={Knapsack 0/1: Cálculo de Valor y Reconstrucción},
+	extendedchars=true, % <-- CORRECCIÓN CLAVE: Permite caracteres UTF-8
+	% Opcional, para mayor robustez en caracteres españoles:
+	literate={ñ}{{\~n}}1 {Ñ}{{\~N}}1 {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+	]
+	/*
+	Este es el Knapsack 0/1, es decir, no permite la repeticion ni fragmentacion de los objetos
+	*/
+	
+	#include <bits/stdc++.h>
+	using namespace std;
+	
+	# define ll long long
+	# define ld long double
+	# define endl '\n'
+	
+	int knapsack(vector<int>& sizes, vector<int>& values, int C){
+		int n = sizes.size();
+		// Matriz bidimensional
+		vector<vector<int>> A(n+1, vector<int>(C+1, 0)); // Ese ,0 inicializa la columna en 0
+		
+		for (int i = 1; i <= n; i++){
+			int si = sizes[i-1]; // Esto es distinto a la teoria
+			int vi = values[i-1]; // Esto tambien es distinto a la teoria
+			for (int c = 0; c <= C; c++){
+				if (si > c){
+					A[i][c] = A[i-1][c];
+				} else {
+					A[i][c] = max( A[i-1][c] , A[i-1][c-si] + vi);
+				}
+			}
+		}
+		
+		return A[n][C];
+	}
+	
+	vector<int> knapsackReconstruction(vector<int>& sizes, vector<int>& values, int C){
+		// --- Primero el Knapsack normal ---
+		int n = sizes.size();
+		// Matriz bidimensional
+		vector<vector<int>> A(n+1, vector<int>(C+1, 0));
+		
+		// Inicializamos la fila y columna en ceros
+		for (int i = 0; i < C; i++) A[0][i] = 0; // Columna en cero
+		
+		for (int i = 1; i <= n; i++){
+			int si = sizes[i-1]; // Esto es distinto a la teoria
+			int vi = values[i-1]; // Esto tambien es distinto a la teoria
+			for (int c = 0; c <= C; c++){
+				if (si > c){
+					A[i][c] = A[i-1][c];
+				} else {
+					A[i][c] = max( A[i-1][c] , A[i-1][c-si] + vi);
+				}
+			}
+		}
+		
+		// return A[n][C]; // Descomentar para Knapsack normal
+		
+		// Ya con la matriz A generada, vemos la reconstruccion
+		vector<int> S;
+		int c = C;
+		
+		for (int i = n; i >= 1; i--){
+			int si = sizes[i-1]; // Esto no es parte de la teoria
+			int vi = values[i-1]; // Esto no es parte de la teoria
+			
+			if (si <= c && A[i-1][c-si] + vi >= A[i-1][c]){
+				S.push_back(i);
+				c = c - si;
+			}
+		}
+		
+		return S;
+	}
+	
+	void solve(){
+		int C,n;
+		while(cin >> C >> n){
+			vector<int> values;
+			vector<int> sizes;
+			
+			int v,s;
+			
+			for (int i = 0; i < n; i++){
+				cin >> v >> s;
+				values.push_back(v);
+				sizes.push_back(s);
+			} 
+			
+			// cout << "Knapsack value solution: " << knapsack(sizes, values, C) << endl;
+			
+			vector<int> knapsack_solution = knapsackReconstruction(sizes, values, C);
+			
+			sort(knapsack_solution.begin(), knapsack_solution.end()); // No es necesario pero mejor
+			
+			cout << knapsack_solution.size() << endl; // Tamaño de la lista de elementos elegidos
+			
+			for (auto item: knapsack_solution){
+				if (item != knapsack_solution[knapsack_solution.size()-1]){
+					cout << item-1 << " ";
+				} else {
+					cout << item-1 << endl;
+				}
+			}
+			cout << endl;
+		}
+	}
+	
+	int main() {
+		ios_base::sync_with_stdio(false);
+		cin.tie(nullptr);
+		
+		solve();
+		
+		return 0;
+	}
+\end{lstlisting}

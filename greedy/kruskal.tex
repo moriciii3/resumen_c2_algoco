@@ -1,0 +1,123 @@
+% greedy/kruskal.tex
+
+% --- Resumen del Algoritmo ---
+\subsubsection{Resumen: Algoritmo de Kruskal para Árbol de Expansión Mínima (MST)}
+
+El Algoritmo de Kruskal encuentra un **Árbol de Expansión Mínima (MST)** en un grafo conexo, no dirigido y ponderado. Un MST es un subconjunto de las aristas del grafo que conecta todos los vértices sin ciclos, y con el menor peso total posible.
+
+\paragraph{Justificación Greedy:}
+Kruskal es un algoritmo \textbf{Voraz (Greedy)} porque en cada paso toma la decisión localmente óptima: **selecciona la arista disponible de menor peso** que no forme un ciclo con las aristas ya seleccionadas.
+\begin{enumerate}
+	\item \textbf{Propiedad de Elección Greedy:} Elegir la arista de menor peso es siempre una decisión segura para construir el MST.
+	\item \textbf{Subestructura Óptima:} El MST se construye a partir de los MST de subconjuntos de aristas.
+\end{enumerate}
+
+
+\paragraph{Pasos del Algoritmo:}
+\begin{enumerate}
+	\item \textbf{Ordenar:} Ordenar todas las aristas del grafo por peso de forma ascendente.
+	\item \textbf{Iterar:} Recorrer las aristas ordenadas.
+	\item \textbf{Chequear Ciclo:} Para cada arista $(u, v)$, si $u$ y $v$ pertenecen a conjuntos disjuntos (no forman ciclo), se añade la arista al MST.
+	\item \textbf{Unir:} Se unen los conjuntos de $u$ y $v$ usando la estructura **Union-Find (Disjoint Set Union - DSU)**.
+\end{enumerate}
+
+\paragraph{Complejidad:}
+* \textbf{Tiempo:} $O(E \log E + E \cdot \alpha(V))$, donde $E$ es el número de aristas y $\alpha(V)$ es la función inversa de Ackermann (prácticamente una constante). El término $E \log E$ se debe principalmente a la ordenación de las aristas.
+* \textbf{Espacio:} $O(V + E)$ para almacenar el grafo y la estructura Union-Find.
+
+% --- Código C++ (Tal cual) ---
+\subsubsection{Código C++ (Kruskal)}
+\begin{lstlisting}[
+	caption={Algoritmo de Kruskal usando Union-Find},
+	extendedchars=true, 
+	literate={ñ}{{\~n}}1 {Ñ}{{\~N}}1 {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+	]
+	/* Implementación básica de Kruskal
+	El contexto es distinto pero el codigo es Kruskal
+	*/
+	
+	#include <bits/stdc++.h>
+	using namespace std;
+	
+	# define ll long long
+	# define ld long double
+	# define endl '\n'
+	
+	struct Edge {
+		ll n1;
+		ll n2;
+		ll w;
+	};
+	
+	bool custom_compare(Edge a, Edge b){
+		return a.w < b.w;
+	}
+	
+	struct union_find {
+		vector<int> e;
+		union_find(int n) { e.assign(n, -1); }
+		
+		int findSet (int x) { 
+			return (e[x] < 0 ? x : e[x] = findSet(e[x]));
+		}
+		
+		bool sameSet (int x, int y) { return findSet(x) == findSet(y); }
+		
+		int size (int x) { return -e[findSet(x)]; }
+		
+		bool unionSet (int x, int y) {
+			x = findSet(x), y = findSet(y);
+			if (x == y) return 0;
+			if (e[x] > e[y]) swap(x, y);
+			e[x] += e[y], e[y] = x;
+			return 1;
+		}
+	};
+	
+	int main() {
+		ios_base::sync_with_stdio(false);
+		cin.tie(nullptr);
+		
+		ll n;
+		cin >> n;
+		
+		vector<Edge> v;
+		for (ll i = 0; i < n; i++){
+			for (ll j = 0; j < n; j++){
+				ll w;
+				cin >> w;
+				
+				if (i < j && w != 0){ // Triangular superior sin diagonal
+					Edge nodo;
+					nodo.n1 = i;
+					nodo.n2 = j;
+					nodo.w = w;
+					v.push_back(nodo);
+				}
+			}
+		}
+		
+		sort(v.begin(), v.end(), custom_compare);
+		
+		// Verificamos que no se formen loops con un union-find
+		union_find sets(n);
+		vector<pair<ll,ll>> output;
+		
+		for (ll i = 0; i < v.size(); i++) {
+			Edge nodo = v[i];
+			if (sets.sameSet(nodo.n1, nodo.n2) == false){
+				sets.unionSet(nodo.n1, nodo.n2); // Unimos los conjuntos
+				output.push_back({nodo.n1+1, nodo.n2+1}); // Agregamos a la respuesta
+				if(output.size() == n-1) break; // ya tenemos n-1 aristas
+			}
+		}
+		
+		sort(output.begin(), output.end());
+		
+		for (ll i = 0; i < n-1; i++){
+			cout << output[i].first << " " << output[i].second << endl;
+		}
+		
+		return 0;
+	}
+\end{lstlisting}

@@ -1,0 +1,54 @@
+% dp/coin_change_combinations_order_doesnt_matter.tex
+
+\subsubsection{Combinaciones de Monedas (El Orden No Importa)}
+
+Busca el número total de formas de formar el monto objetivo $X$, donde la secuencia de monedas usadas no importa (ej., $1+2$ es igual a $2+1$). Esto se logra iterando sobre las monedas (exterior) y luego sobre los montos (interior), para evitar el doble conteo.
+
+\paragraph{Fórmula DP:}
+$$
+DP[j] = DP[j] + DP[j - C_i]
+$$
+
+\paragraph{Complejidad:}
+* \textbf{Tiempo:} $O(N \cdot X)$.
+* \textbf{Espacio:} $O(X)$.
+
+% --- Código C++ ---
+\subsubsection{Código C++ (Combinaciones - Orden No Importa)}
+\begin{lstlisting}[
+	caption={Coin Change: Combinaciones donde el orden no importa (DP)},
+	extendedchars=true, 
+	literate={ñ}{{\~n}}1 {Ñ}{{\~N}}1 {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+	]
+	#include <bits/stdc++.h>
+	using 11 long long;
+	using namespace std;
+	
+	#define endl "\n"
+	#define mod 1000000007
+	
+	int main() {
+		11 n, x;
+		cin >> n >> x;
+		
+		11 dp[x + 1] = {0};
+		11 coins [n];
+		
+		for (11 i=0; i < n; i++) {
+			cin >> coins [i];
+		}
+		
+		dp [0] = 1;
+		
+		// Bucle externo sobre las monedas (i)
+		for (ll i=0; i < n; i++) {
+			// Bucle interno sobre los montos (j)
+			for (11 j = coins [i]; j <= x; j++) {
+				dp[j] = (dp[j] + dp[j - coins [i]]) % mod;
+			}
+		}
+		
+		cout << dp [x] << endl;
+		return 0;
+	}
+\end{lstlisting}

@@ -1,0 +1,59 @@
+% dp/coin_change_min.tex
+
+\subsubsection{Cantidad Mínima de Monedas (Coin Change Minimum)}
+
+El problema busca encontrar el número mínimo de monedas requeridas para alcanzar un monto objetivo $X$, dado un conjunto de denominaciones $C_j$ y suministro ilimitado.
+
+\paragraph{Fórmula DP:}
+$$
+DP[i] = 1 + \min_{j} \left\{ DP[i - C_j] \right\} \quad \text{si } i \ge C_j
+$$
+
+\paragraph{Complejidad:}
+* \textbf{Tiempo:} $O(N \cdot X)$, donde $N$ es el número de monedas y $X$ el monto objetivo.
+* \textbf{Espacio:} $O(X)$.
+
+% --- Código C++ ---
+\subsubsection{Código C++ (Cantidad Mínima de Monedas)}
+\begin{lstlisting}[
+	caption={Coin Change: Mínimo número de monedas (DP)},
+	extendedchars=true, 
+	literate={ñ}{{\~n}}1 {Ñ}{{\~N}}1 {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o'}}1 {ú}{{\'u}}1 {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+	]
+	#include <bits/stdc++.h>
+	using namespace std;
+	11 inf = 1e9; // Definición aproximada en el contexto del PDF
+	using 11 long long;
+	
+	
+	int main() {
+		11 n, x;
+		cin >> n >> x;
+		
+		vector<11> dp(x + 1, inf);
+		vector<11> coins (n);
+		
+		for (ll i=0; i < n; i++) {
+			cin >> coins [i];
+		}
+		
+		dp [0] = 0;
+		
+		for (11 i=1; i <= x; i++) { // Corregí el <= X que faltaba en el bucle del PDF
+			for (11 j=0; j<n; j++)
+			if (i >= coins [j])
+			{
+				dp[i] = min (dp[i], dp[i - coins [j]] + 1);
+			}
+		}
+		
+		if (dp[x] == inf)
+		{
+			cout << -1 << endl; // El PDF imprime 1, pero -1 o "IMPOSSIBLE" es más estándar
+		} else {
+			cout << dp [x] << endl;
+		}
+		
+		return 0;
+	}
+\end{lstlisting}

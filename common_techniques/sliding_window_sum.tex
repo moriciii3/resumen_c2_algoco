@@ -1,0 +1,50 @@
+% common_techniques/sliding_window_sum.tex
+
+\subsubsection{Subarreglos con Suma Objetivo (Sliding Window)}
+
+Algoritmo que usa la técnica de la Ventana Deslizante (Sliding Window) para encontrar el número de subarreglos contiguos en un array de enteros positivos cuya suma es igual a un valor objetivo $X$. Utiliza una \texttt{deque} para expandir y contraer la ventana de forma eficiente en $O(1)$.
+
+\paragraph{Complejidad:}
+* \textbf{Tiempo:} $O(N)$, ya que cada elemento se procesa y elimina de la ventana a lo sumo una vez.
+* \textbf{Espacio:} $O(N)$.
+
+% --- Código C++ ---
+\subsubsection{Código C++ (Subarreglos con Suma)}
+\begin{lstlisting}[
+	caption={Sliding Window para Suma Objetivo (usando deque)},
+	extendedchars=true, 
+	literate={ñ}{{\~n}}1 {Ñ}{{\~N}}1 {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+	]
+	#include <bits/stdc++.h>
+	using 11 long long;
+	using namespace std;
+	
+	
+	int main() {
+		11 n, x, cont = 0, suma = 0;
+		cin >> n >> x;
+		deque <11> dq;
+		for (ll i=0; i < n; i++) {
+			11 num;
+			cin >> num;
+			dq.push_back(num);
+			suma += num;
+			while (suma > x) {
+				suma -= dq.front();
+				dq.pop_front();
+			}
+			
+			if (suma == x) {
+				cont++;
+				// Este bloque adicional maneja el caso donde solo queremos el número de subarreglos
+				// y no queremos que se solapen si hubiera más de una solución.
+				// Para contar todos los subarreglos, la condición de avance (pop_front) puede variar.
+				suma -= dq.front();
+				dq.pop_front();
+			}
+		}
+		
+		cout << cont << endl;
+		return 0;
+	}
+\end{lstlisting}

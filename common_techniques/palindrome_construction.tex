@@ -1,0 +1,53 @@
+% common_techniques/palindrome_construction.tex
+
+\subsubsection{Construcción de Palíndromos}
+
+El problema verifica si los caracteres de una cadena pueden reordenarse para formar un palíndromo. Esto solo es posible si, a lo sumo, un carácter tiene una frecuencia de aparición impar. La solución construye el palíndromo tomando la mitad de la frecuencia de cada carácter, poniendo el carácter impar en el centro (si existe), y luego añadiendo la mitad invertida.
+
+\paragraph{Complejidad:}
+* \textbf{Tiempo:} $O(N \log N)$ (debido al map y la construcción de la cadena).
+* \textbf{Espacio:} $O(N)$.
+
+% --- Código C++ ---
+\subsubsection{Código C++ (Construcción de Palíndromos)}
+\begin{lstlisting}[
+	caption={Construir Palíndromo a partir de las frecuencias de caracteres},
+	extendedchars=true, 
+	literate={ñ}{{\~n}}1 {Ñ}{{\~N}}1 {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+	]
+	#include <bits/stdc++.h>
+	using namespace std;
+	using 11 long long;
+	int main() {
+		string s;
+		cin >> s;
+		map<char, 11> m;
+		for (11 i=0; i < s.size(); i++) {
+			m[s[i]]++;
+		}
+		11 not_pair = 0;
+		char odd_char = ' ';
+		for (auto &it: m) {
+			if (it.second % 2 != 0) {
+				not_pair++;
+				odd_char = it.first;
+			}
+		}
+		if (not_pair > 1) {
+			cout << "NO SOLUTION" << endl;
+			return 0;
+		}
+		string half = "";
+		for (auto &it: m) {
+			half += string(it.second / 2, it.first);
+		}
+		string palindrome = half;
+		if (not_pair == 1) {
+			palindrome += odd_char;
+		}
+		reverse (half.begin(), half.end());
+		palindrome += half;
+		cout << palindrome << endl;
+		return 0;
+	}
+\end{lstlisting}

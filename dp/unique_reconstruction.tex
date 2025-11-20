@@ -1,0 +1,122 @@
+% dp/unique_reconstruction.tex
+
+\subsubsection{Combinaciones con Reconstrucción Única (Problema del Camarero)}
+
+Este problema es una variación del problema de Combinaciones de Monedas, pero con tres posibles resultados: \textbf{Impossible} (0 formas), \textbf{Ambiguous} (2 o más formas), o **Solución Única** (1 forma). La clave es usar la DP para contar las formas (limitado a $\le 2$) y, si la cuenta es 1, usar una segunda pasada de DP para almacenar los índices y reconstruir la solución.
+
+\paragraph{Estrategia de Doble DP:}
+1.  \textbf{Contador (\texttt{countWays}):} Calcula $DP[x]$ = número de formas de sumar $x$, truncando a 2 (0, 1, o $2+$).
+2.  \textbf{Reconstructor (\texttt{reconstruct}):} Usa una DP similar, pero solo propaga si se encuentra \textbf{exactamente una} forma de alcanzar el monto anterior, y almacena el índice del último ítem usado en \texttt{last[x]}.
+
+\paragraph{Fórmula DP (Contador):}
+Similar a Combinaciones (Orden No Importa), ya que el orden de los ítems en el pedido final no importa.
+$$
+DP[x] = DP[x] + DP[x - p] \quad \text{Luego}: DP[x] = \min(DP[x], 2)
+$$
+
+\paragraph{Fórmula DP (Reconstructor):}
+Propaga solo si la única forma de alcanzar $x$ es a través de un único camino previo:
+$$
+\text{Si } DP[x - p] = 1 \text{ y } DP[x] = 0 \quad \text{entonces}: DP[x] = 1, \quad \text{last}[x] = i
+$$
+
+\paragraph{Complejidad:}
+* \textbf{Tiempo:} $O(N \cdot C)$, donde $N$ es el número de ítems del menú y $C$ es el costo total máximo del pedido ($30000$).
+* \textbf{Espacio:} $O(C)$.
+
+% --- Código C++ (Tal cual) ---
+\subsubsection{Código C++ (Reconstrucción Única)}
+\begin{lstlisting}[
+	caption={Combinaciones y Reconstrucción Única},
+	extendedchars=true, 
+	literate={ñ}{{\~n}}1 {Ñ}{{\~N}}1 {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+	]
+	#include <bits/stdc++.h>
+	using namespace std;
+	
+	vector<int> countWays(const vector<int>& prices, int C) {
+		vector<int> dp(C+1, 0);
+		dp[0] = 1;
+		
+		for (int i = 0; i < prices.size(); i++) {
+			int p = prices[i];
+			for (int x = p; x <= C; x++) {
+				dp[x] += dp[x - p];
+				if (dp[x] > 2) dp[x] = 2; // solo interesa 0,1,2+
+			}
+		}
+		return dp;
+	}
+	
+	vector<int> reconstruct(const vector<int>& prices, int C) {
+		int n = prices.size();
+		
+		// dp[i] = 1 si existe EXACTAMENTE una forma de armar i
+		vector<int> dp(C+1, 0);
+		vector<int> last(C+1, -1); // guarda el índice del último item usado
+		
+		dp[0] = 1;
+		
+		for (int i = 0; i < n; i++) {
+			int p = prices[i];
+			for (int x = p; x <= C; x++) {
+				if (dp[x - p] == 1 && dp[x] == 0) {
+					dp[x] = 1;
+					last[x] = i;
+				}
+			}
+		}
+		
+		vector<int> sol;
+		int cur = C;
+		
+		while (cur > 0) {
+			int i = last[cur];
+			sol.push_back(i+1);
+			cur -= prices[i];
+		}
+		
+		return sol;
+	}
+	
+	int main() {
+		ios::sync_with_stdio(false);
+		cin.tie(nullptr);
+		
+		int n; 
+		cin >> n;
+		vector<int> prices(n);
+		for (int i = 0; i < n; i++) cin >> prices[i];
+		
+		int m; 
+		cin >> m;
+		vector<int> orders(m);
+		for (int i = 0; i < m; i++) cin >> orders[i];
+		
+		for (int s : orders) {
+			
+			vector<int> ways = countWays(prices, s);
+			
+			if (ways[s] == 0) {
+				cout << "Impossible\n";
+				continue;
+			}
+			if (ways[s] >= 2) {
+				cout << "Ambiguous\n";
+				continue;
+			}
+			
+			// reconstruccion unica
+			vector<int> sol = reconstruct(prices, s);
+			sort(sol.begin(), sol.end());
+			
+			for (int i = 0; i < sol.size(); i++) {
+				if (i) cout << " ";
+				cout << sol[i];
+			}
+			cout << "\n";
+		}
+		
+		return 0;
+	}
+\end{lstlisting}

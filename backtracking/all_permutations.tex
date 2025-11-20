@@ -1,0 +1,42 @@
+% backtracking/all_permutations.tex
+
+\subsubsection{Generación de Todas las Permutaciones}
+
+Este problema consiste en generar y listar todas las posibles permutaciones de una cadena de caracteres dada, en orden lexicográfico. Utiliza el algoritmo \texttt{std::next\_permutation} dentro de un bucle \texttt{do-while} para generar todas las $N!$ permutaciones de forma eficiente.
+
+\paragraph{Complejidad:}
+* \textbf{Tiempo:} $O(N \cdot N!)$, ya que se generan $N!$ permutaciones y cada una cuesta $O(N)$.
+* \textbf{Espacio:} $O(N \cdot N!)$, para almacenar todas las permutaciones.
+
+% --- Código C++ ---
+\subsubsection{Código C++ (Generación de Permutaciones)}
+\begin{lstlisting}[
+	caption={Generar todas las permutaciones de una cadena (STL)},
+	extendedchars=true, 
+	literate={ñ}{{\~n}}1 {Ñ}{{\~N}}1 {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+	]
+	#include <bits/stdc++.h>
+	using namespace std;
+	using 11 long long;
+	
+	int main() {
+		string cadena;
+		cin >> cadena;
+		vector<string> cadenas; 
+		
+		// El orden inicial es crucial para next_permutation
+		sort(cadena.begin(), cadena.end()); 
+		
+		do {
+			cadenas.push_back(cadena);
+		}
+		while (next_permutation(cadena.begin(), cadena.end()));
+		
+		cout << cadenas.size() << endl;
+		for (11 i = 0; i < cadenas.size(); i++){
+			cout << cadenas [i] << endl;
+		}
+		
+		return 0;
+	}
+\end{lstlisting}
