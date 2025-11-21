@@ -24,6 +24,7 @@ La función \texttt{wisReconstruction} determina qué elementos fueron incluidos
 	]
 	#include <bits/stdc++.h>
 	using namespace std;
+	# define int long long
 	
 	vector<int> wisReconstruction(vector<int>& A){
 		int n = A.size();
@@ -61,7 +62,7 @@ La función \texttt{wisReconstruction} determina qué elementos fueron incluidos
 		return S;
 	}
 	
-	int mwis(vector<int>& A){
+	signed mwis(vector<int>& A){
 		int n = A.size();
 		if (n == 0) return 0;
 		if (n == 1) return A[0];
