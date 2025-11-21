@@ -62,7 +62,7 @@ La función \texttt{wisReconstruction} determina qué elementos fueron incluidos
 		return S;
 	}
 	
-	signed mwis(vector<int>& A){
+	int mwis(vector<int>& A){
 		int n = A.size();
 		if (n == 0) return 0;
 		if (n == 1) return A[0];
@@ -79,7 +79,7 @@ La función \texttt{wisReconstruction} determina qué elementos fueron incluidos
 	}
 	
 	
-	int main(){
+	signed main(){
 		vector<int> values = {1,2,4,1,7,8,3};
 		cout << mwis(values) << endl;
 		

@@ -68,8 +68,7 @@ El código utiliza la estructura de conjuntos disjuntos \texttt{union\_find} par
 		}
 	};
 	
-	pair<int, vector<pair<int,int>>> minSpanningTree(vector<Edge> v){
-		int n = v.size();
+	pair<int, vector<pair<int,int>>> minSpanningTree(vector<Edge>& v, int n){
 		sort(v.begin(), v.end(), custom_compare_min);
 		union_find sets(n);
 		vector<pair<int,int>> output;
@@ -91,8 +90,7 @@ El código utiliza la estructura de conjuntos disjuntos \texttt{union\_find} par
 		return {contador, output};
 	}
 	
-	pair<int, vector<pair<int,int>>> maxSpanningTree(vector<Edge> v){
-		int n = v.size();
+	pair<int, vector<pair<int,int>>> maxSpanningTree(vector<Edge> v, int n){
 		sort(v.begin(), v.end(), custom_compare_max);
 		union_find sets(n);
 		vector<pair<int,int>> output;
@@ -129,18 +127,18 @@ El código utiliza la estructura de conjuntos disjuntos \texttt{union\_find} par
 				
 				if (i < j && w != 0){ // Triangular superior sin diagonal
 					Edge nodo;
-					nodo.n1 = i;
-					nodo.n2 = j;
+					nodo.n1 = i; // Deben empezar de 0
+					nodo.n2 = j; // Deben empezar de 0
 					nodo.w = w;
 					v.push_back(nodo);
 				}
 			}
 		}
 		cout << "Min ST Value: " << minSpanningTree(v).first << endl;
-		for (auto c: minSpanningTree(v).second) cout << c.first << " " << c.second << endl ;
+		for (auto c: minSpanningTree(v).second, n) cout << c.first << " " << c.second << endl ;
 		
 		cout << "Max ST Value: " << maxSpanningTree(v).first << endl;
-		for (auto c: maxSpanningTree(v).second) cout << c.first << " " << c.second << endl ;
+		for (auto c: maxSpanningTree(v).second, n) cout << c.first << " " << c.second << endl ;
 		
 		return 0;
 	}
